@@ -1,0 +1,5 @@
+var searchIndex = JSON.parse('{\
+"allocator":{"doc":"","t":"HRDFLLLMLMMLLFLLLL","n":["HEAP","HEAP_SIZE","SimpleAllocator","_start","alloc","borrow","borrow_mut","current","from","heap_end","heap_start","into","new","panic","reset","try_from","try_into","type_id"],"q":[[0,"allocator"]],"d":["","Exemple d’utilisation","","","Alloue une taille donnée en mémoire","","","","Returns the argument unchanged.","","","Calls <code>U::from(self)</code>.","Créé un nouvel allocateur avec un bloc de mémoire …","Rust needs a panic handler for now just a no return …","Remet à zéro l’allocateur pour réutiliser la mémoire","","",""],"i":[0,0,0,0,2,2,2,2,2,2,2,2,2,0,2,2,2,2],"f":[0,0,0,[[],1],[[2,3],4],[[]],[[]],0,[[]],0,0,[[]],[[4,3],2],[5,1],[2],[[],6],[[],6],[[],7]],"c":[],"p":[[15,"never"],[3,"SimpleAllocator"],[15,"usize"],[15,"u8"],[3,"PanicInfo"],[4,"Result"],[3,"TypeId"]]}\
+}');
+if (typeof window !== 'undefined' && window.initSearch) {window.initSearch(searchIndex)};
+if (typeof exports !== 'undefined') {exports.searchIndex = searchIndex};
