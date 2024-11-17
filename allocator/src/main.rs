@@ -1,5 +1,5 @@
-#![no_main]
-#![no_std]
+#![cfg_attr(not(feature = "test"), no_std)]
+#![cfg_attr(not(feature = "test"), no_main)]
 
 use core::panic::PanicInfo;
 use core::ptr;
@@ -52,44 +52,90 @@ impl SimpleAllocator {
         }
     }
 
+    pub unsafe fn dealloc(&mut self, ptr: *mut u8, size: usize) {
+        // Vérifie si le pointeur est dans la plage du tas
+        if ptr >= self.heap_start && ptr < self.heap_end {
+            // Remet les octets de la mémoire à zéro
+            for i in 0..size {
+                ptr.add(i).write(0);
+            }
+            // Si le pointeur correspond au bloc le plus récent alloué,
+            // recule le curseur pour permettre la réutilisation de cette mémoire
+            if ptr.add(size) == self.current {
+                self.current = ptr;
+            }
+        }
+    }
+
     // Réinitialise l'allocateur pour réutiliser la mémoire
     pub unsafe fn reset(&mut self) {
         self.current = self.heap_start;
     }
 }
 
-#[no_mangle]
+#[cfg_attr(not(feature = "test"), no_mangle)]
 pub extern "C" fn _start() -> ! {
-    // Exemple d'utilisation
-    const HEAP_SIZE: usize = 1024;
-    static mut HEAP: [u8; HEAP_SIZE] = [0; HEAP_SIZE];
-
-    let mut allocator = unsafe { SimpleAllocator::new(HEAP.as_mut_ptr(), HEAP_SIZE) };
-
-    unsafe {
-        // Données à copier
-        let data = [1, 2, 3, 4, 5];
-        
-        // Alloue et copie les données
-        let mem = allocator.alloc_and_copy(&data);
-        // Récupère et affiche les données copiées
-        if let Some(allocated_data) = allocator.reading(mem, data.len()) {
-            for &byte in allocated_data {
-                // Utilisez la donnée (ici, vous pouvez afficher avec un débogueur ou effectuer d'autres opérations)
-                // Affichage fictif pour éviter les opérations réelles dans un contexte `no_std`
-            }
-        }
-        // Réinitialise l'allocateur pour réutiliser toute la mémoire
-        allocator.reset();
-    }
-
-    loop{}
+    loop {}
 }
 
 /// Gestionnaire de panic pour le compilateur Rust
-#[panic_handler]
+#[cfg_attr(not(feature = "test"), panic_handler)]
 fn panic(_info: &PanicInfo) -> ! {
     loop {}
+}
+
+#[cfg(feature = "test")]
+fn main() {
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_allocation_and_copy() {
+        const HEAP_SIZE: usize = 1024;
+        static mut HEAP: [u8; HEAP_SIZE] = [0; HEAP_SIZE];
+
+        let mut allocator = unsafe { SimpleAllocator::new(HEAP.as_mut_ptr(), HEAP_SIZE) };
+
+        unsafe {
+            // Données à tester
+            let data = [10, 20, 30, 40, 50];
+            
+            // Alloue et copie les données
+            let mem = allocator.alloc_and_copy(&data);
+            
+            // Vérifie que la mémoire est allouée
+            assert!(!mem.is_null(), "Allocation échouée!");
+
+            // Vérifie les données copiées
+            if let Some(allocated_data) = allocator.read(mem, data.len()) {
+                assert_eq!(allocated_data, &data, "Les données ne correspondent pas!");
+            } else {
+                panic!("Lecture échouée de la mémoire allouée!");
+            }
+
+            // Réinitialise et vérifie qu'on peut réutiliser la mémoire
+            allocator.reset();
+            let new_mem = allocator.alloc(data.len());
+            assert_eq!(new_mem, mem, "Mémoire non réutilisable après réinitialisation!");
+        }
+    }
+
+    #[test]
+    fn test_out_of_memory() {
+        const HEAP_SIZE: usize = 16;
+        static mut HEAP: [u8; HEAP_SIZE] = [0; HEAP_SIZE];
+
+        let mut allocator = unsafe { SimpleAllocator::new(HEAP.as_mut_ptr(), HEAP_SIZE) };
+
+        unsafe {
+            // Alloue plus de mémoire que disponible
+            let mem = allocator.alloc(HEAP_SIZE + 1);
+            assert!(mem.is_null(), "L'allocation aurait dû échouer!");
+        }
+    }
 }
 
 /*

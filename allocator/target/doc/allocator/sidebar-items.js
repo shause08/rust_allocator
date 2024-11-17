@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["HEAP_SIZE"],"fn":["_start","panic"],"static":["HEAP"],"struct":["SimpleAllocator"]};
