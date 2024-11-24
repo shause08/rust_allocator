@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["HEAP_SIZE"],"fn":["_start","panic","write_log"],"static":["HEAP","LOG_OFFSET"],"struct":["SimpleAllocator"]};

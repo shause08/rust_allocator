@@ -1,0 +1,5 @@
+var searchIndex = JSON.parse('{\
+"allocator":{"doc":"","t":"HRHDFLLLLMLLMMLLFLLLLLF","n":["HEAP","HEAP_SIZE","LOG_OFFSET","SimpleAllocator","_start","alloc","alloc_and_copy","borrow","borrow_mut","current","dealloc","from","heap_end","heap_start","into","new","panic","reading","reset","try_from","try_into","type_id","write_log"],"q":[[0,"allocator"]],"d":["","","Offset pour écrire les logs séquentiellement","Allocateur simple","","","","","","","","Returns the argument unchanged.","","","Calls <code>U::from(self)</code>.","","Gestionnaire de panique","","","","","","Fonction pour écrire des messages dans une zone mémoire …"],"i":[0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,0,2,2,2,2,2,0],"f":[0,0,0,0,[[],1],[[2,3],4],[2,4],[[]],[[]],0,[[2,4,3]],[[]],0,0,[[]],[[4,3],2],[5,1],[[2,4,3],6],[2],[[],7],[[],7],[[],8],[9]],"c":[],"p":[[15,"never"],[3,"SimpleAllocator"],[15,"usize"],[15,"u8"],[3,"PanicInfo"],[4,"Option"],[4,"Result"],[3,"TypeId"],[15,"str"]]}\
+}');
+if (typeof window !== 'undefined' && window.initSearch) {window.initSearch(searchIndex)};
+if (typeof exports !== 'undefined') {exports.searchIndex = searchIndex};
